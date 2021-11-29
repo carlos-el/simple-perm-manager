@@ -1,6 +1,10 @@
 use std::collections::HashSet;
 use uuid::Uuid;
 
+//// TESTS ////
+#[cfg(test)]
+mod tests;
+
 // Struct for managing permissions. Permissions are modeled as a simple set of actions
 // Operations can be done between them. 
 // There are two types of permissions, managed and unmanaged:
@@ -47,7 +51,7 @@ impl Permission {
     }
 
     pub fn union(&self, other: &Permission) -> Permission {
-        if self.can_operate_with(other) {
+        if !self.can_operate_with(other) {
             panic!("Permissions in union operation do not have same manager");
         }
 
@@ -61,7 +65,7 @@ impl Permission {
     }
 
     pub fn difference(&self, other: &Permission) -> Permission {
-        if self.can_operate_with(other) {
+        if !self.can_operate_with(other) {
             panic!("Permissions in difference operation do not have same manager");
         }
 
@@ -75,7 +79,7 @@ impl Permission {
     }
 
     pub fn contains(&self, other: &Permission) -> bool {
-        if self.can_operate_with(other) {
+        if !self.can_operate_with(other) {
             panic!("Permissions in contains operation do not have same manager");
         }
 
