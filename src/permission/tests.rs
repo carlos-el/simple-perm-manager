@@ -22,6 +22,17 @@ fn get_actions_test() {
 }
 
 #[test]
+fn is_managed_test() {
+    let actions = HashSet::from([String::from("view"), String::from("create")]);
+    let id = Uuid::new_v4();
+    let managed = Permission::from_actions(&actions, &Some(id));
+    let not_managed = Permission::from_actions(&actions, &None);
+
+    assert_eq!(managed.is_managed(), true);
+    assert_eq!(not_managed.is_managed(), false);
+}
+
+#[test]
 fn has_same_manager_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
     let id = Uuid::new_v4();
@@ -33,6 +44,20 @@ fn has_same_manager_test() {
     assert_eq!(p1.has_same_manager(&p2), true);
     assert_eq!(p1.has_same_manager(&p3), false);
     assert_eq!(p1.has_same_manager(&p4), false);
+}
+
+#[test]
+fn can_operate_with_test() {
+    let actions = HashSet::from([String::from("view"), String::from("create")]);
+    let id = Uuid::new_v4();
+    let p1 = Permission::from_actions(&actions, &Some(id));
+    let p2 = Permission::from_actions(&actions, &Some(id));
+    let p3 = Permission::from_actions(&actions, &Some(Uuid::new_v4()));
+    let not_managed = Permission::from_actions(&actions, &None);
+
+    assert_eq!(p1.can_operate_with(&p2), true);
+    assert_eq!(p1.can_operate_with(&p3), false);
+    assert_eq!(p1.can_operate_with(&not_managed), false);
 }
 
 #[test]
