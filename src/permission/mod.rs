@@ -39,7 +39,7 @@ impl Permission {
     }
 
     pub fn is_managed(&self) -> bool {
-        !self.manager_id.is_none()
+        self.manager_id.is_some()
     }
 
     pub fn has_same_manager(&self, other: &Permission) -> bool {

@@ -26,7 +26,7 @@ impl PermissionManager {
     }
 
     pub fn validate_perm(&self, perm: &Permission) -> bool {
-        self.universe.has_same_manager(&perm) && self.universe.contains(&perm)
+        self.universe.has_same_manager(perm) && self.universe.contains(perm)
     }
 
     pub fn perm_from_actions(&self, actions: HashSet<String>) -> Permission {
