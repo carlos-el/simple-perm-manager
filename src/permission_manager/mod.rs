@@ -2,6 +2,11 @@ use crate::permission::Permission;
 use std::collections::HashSet;
 use uuid::Uuid;
 
+//// TESTS ////
+#[cfg(test)]
+mod tests;
+
+
 #[derive(Debug)]
 pub struct PermissionManager {
     universe: Permission,
