@@ -1,5 +1,6 @@
 mod permission;
 mod permission_manager;
+use permission::Permission;
 use permission_manager::PermissionManager;
 use std::collections::HashSet;
 
@@ -38,4 +39,34 @@ fn main() {
     println!("Contains 2: {:#?}", p1.contains(&p3));
     println!("ContAction 1: {:#?}", p1.contains_action("building.edit"));
     println!("ContAction 2: {:#?}", p1.contains_action("building.delete"));
+
+    let data = r#"
+    {
+        "building": {
+          "view": true,
+          "create": true,
+          "edit": true,
+          "delete": true,
+          "meter": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          },
+          "room": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          }
+        },
+        "user": {
+            "view": true,
+            "create": true,
+            "edit": true,
+            "delete": true
+          }
+    }"#;
+
+    println!("From JSON: {:#?}", Permission::from_json(data, &None))
 }
