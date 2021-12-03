@@ -21,10 +21,11 @@ pub fn deserialize_actions(
     for (key, value) in json_obj.into_iter() {
         match value {
             Value::Object(map) => {
+                let fmt = if prefix.len() == 0 { format!("{}", key) } else { format!("{}.{}", prefix, key) };
                 actions = actions
                     .union(&deserialize_actions(
                         current_depth + 1,
-                        &format!("{}.{}", prefix, key),
+                        &fmt,
                         map,
                     ))
                     .cloned()
