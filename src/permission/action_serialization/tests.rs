@@ -1,5 +1,6 @@
 use super::*;
 use serde_json::json;
+use std::collections::HashSet;
 
 #[test]
 fn deserialize_actions_test() {
@@ -55,6 +56,58 @@ fn deserialize_actions_test() {
             }
             Err(_) => (),
         },
-        _ => panic!("error in test data shoul be a Value::Object",),
+        _ => panic!("error in test data should be a Value::Object",),
     };
+}
+
+#[test]
+fn serialize_actions_test() {
+    // Test normal actions to map
+    let actions: HashSet<String> = HashSet::from([
+        String::from("building.view"),
+        String::from("building.create"),
+        String::from("building.meter.view"),
+        String::from("building.meter.readings.view"),
+        String::from("building.meter.readings.edit"),
+        String::from("user.view"),
+    ]);
+
+    let result_map = json!({
+        "building": {
+            "view": true,
+            "create": true,
+            "meter": {
+                "view": true,
+                "readings": {
+                    "view": true,
+                    "edit": true,
+                },
+            },
+        },
+        "user": {
+            "view": true,
+        },
+    });
+
+    assert_eq!(Value::Object(serialize_actions(&actions)), result_map);
+
+    // Test empty actions to map
+    let actions: HashSet<String> = HashSet::from([]);
+    let result_map = json!({});
+
+    assert_eq!(Value::Object(serialize_actions(&actions)), result_map);
+
+    // Test simple actions to map
+    let actions: HashSet<String> = HashSet::from([
+        String::from("building_view"),
+        String::from("building_create"),
+        String::from("user_view"),
+    ]);
+    let result_map = json!({
+        "building_view": true,
+        "building_create": true,
+        "user_view": true,
+    });
+
+    assert_eq!(Value::Object(serialize_actions(&actions)), result_map);
 }
