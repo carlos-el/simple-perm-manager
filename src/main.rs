@@ -44,29 +44,19 @@ fn main() {
     {
         "building": {
           "view": true,
-          "create": true,
-          "edit": true,
-          "delete": true,
           "meter": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
+            "create": true
           },
           "room": {
-            "view": true,
-            "create": true,
-            "edit": true,
-            "delete": true
+            "edit": true
           }
         },
         "user": {
-            "view": true,
-            "create": true,
-            "edit": true,
             "delete": true
           }
     }"#;
 
-    println!("From JSON: {:#?}", Permission::from_json(data, &None))
+    let my_perm = Permission::from_json(data, &None);
+    println!("From JSON: {:#?}", my_perm);
+    println!("To JSON: {:#?}", my_perm.to_json())
 }
