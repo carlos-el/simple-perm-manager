@@ -13,6 +13,75 @@ fn from_actions_test() {
 }
 
 #[test]
+fn from_json_test() {
+    // Test json string provided is not valid json
+    let data = r#"{ building: true }"#;
+
+    match std::panic::catch_unwind(|| {
+        Permission::from_json(data, &None);
+    }) {
+        Ok(_) => panic!("from_json constructor should have panicked for invalid json"),
+        Err(_) => (),
+    }
+
+    // Test json string does not contains an object as first element
+    let data = r#" "building": { "view": true } "#;
+
+    match std::panic::catch_unwind(|| {
+        Permission::from_json(data, &None);
+    }) {
+        Ok(_) => panic!("from_json constructor should have panicked for invalid values"),
+        Err(_) => (),
+    }
+
+    // Test resulting permission has the rigth actions
+    let data = r#"{
+        "building": {
+            "view": true,
+            "create": true,
+            "meter": { "view": true },
+            "room": { "view": true }
+        },
+        "user": { "view": true }
+    }"#;
+    let resulting_actions = HashSet::from([
+        String::from("building.view"),
+        String::from("building.create"),
+        String::from("building.meter.view"),
+        String::from("building.room.view"),
+        String::from("user.view"),
+    ]);
+
+    let perm = Permission::from_json(data, &None);
+    assert_eq!(*perm.get_actions(), resulting_actions);
+}
+
+#[test]
+fn to_json_test() {
+    let data = r#"
+    {
+        "building": {
+          "view": true,
+          "meter": {
+            "create": true
+          },
+          "room": {
+            "edit": true
+          }
+        },
+        "user": {
+            "delete": true
+        
+        }
+    }"#;
+
+    let my_perm = Permission::from_json(data, &None);
+    let v1: Value = serde_json::from_str(data).unwrap();
+    let v2: Value = serde_json::from_str(&my_perm.to_json()).unwrap();
+    assert_eq!(v1, v2)
+}
+
+#[test]
 fn get_actions_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
     let id = Uuid::new_v4();
@@ -343,7 +412,10 @@ fn contains_test_perm_diff_manager() {
 #[test]
 fn contains_action_test() {
     let id = Uuid::new_v4();
-    let p1 = Permission::from_actions(&HashSet::from([String::from("view"),String::from("create")]), &Some(id));
+    let p1 = Permission::from_actions(
+        &HashSet::from([String::from("view"), String::from("create")]),
+        &Some(id),
+    );
 
     assert_eq!(p1.contains_action(&String::from("view")), true);
     assert_eq!(p1.contains_action(&String::from("delete")), false);
