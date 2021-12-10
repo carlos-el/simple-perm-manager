@@ -1,5 +1,5 @@
 mod action_serialization;
-use serde_json::{Value};
+use serde_json::Value;
 use std::collections::HashSet;
 use uuid::Uuid;
 
@@ -33,7 +33,6 @@ impl Permission {
     // TODO Not implemented
     // pub fn from_str(actions_str: String, manager_id: &Option<Uuid>) -> Permission;
     // pub fn to_str(&self) -> String;
-    // pub fn to_json(&self) -> String;
 
     pub fn from_json(actions_json: &str, manager_id: &Option<Uuid>) -> Permission {
         let actions_generated: HashSet<String>;
@@ -51,6 +50,10 @@ impl Permission {
             actions: actions_generated,
             manager_id: *manager_id,
         }
+    }
+
+    pub fn to_json(&self) -> String {
+        Value::Object(action_serialization::serialize_actions(self.get_actions())).to_string()
     }
 
     pub fn get_actions(&self) -> &HashSet<String> {
