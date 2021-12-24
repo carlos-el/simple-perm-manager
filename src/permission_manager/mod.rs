@@ -38,7 +38,7 @@ impl PermissionManager {
         let perm = Permission::from_actions(&actions, &Some(self.id));
 
         if !self.validate_perm(&perm) {
-            panic!("Actions for Permission creation not allowed in PermissionManager")
+            panic!("Actions for Permission creation not allowed in PermissionManager or Permission id does not correspond to Manager id")
         }
 
         perm
