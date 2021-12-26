@@ -19,22 +19,23 @@ pub fn deserialize_actions(
     let mut actions: HashSet<String> = HashSet::new();
 
     for (key, value) in json_obj.into_iter() {
+        // Get the string representing the action correctly formatted (Control trailing first dot with prefix value)
+        let action_value = if prefix.is_empty() {
+            key.to_string()
+        } else {
+            format!("{}.{}", prefix, key)
+        };
+
         match value {
             Value::Object(map) => {
-                let fmt = if prefix.is_empty() {
-                    key.to_string()
-                } else {
-                    format!("{}.{}", prefix, key)
-                };
                 actions = actions
-                    .union(&deserialize_actions(current_depth + 1, &fmt, map))
+                    .union(&deserialize_actions(current_depth + 1, &action_value, map))
                     .cloned()
                     .collect();
             }
             Value::Bool(val) => {
                 if *val {
-                    // Control trailing first dot with nesting counter
-                    actions.insert(format!("{}.{}", prefix, key));
+                    actions.insert(action_value);
                 }
             }
             _ => panic!(

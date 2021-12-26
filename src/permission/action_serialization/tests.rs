@@ -4,6 +4,41 @@ use std::collections::HashSet;
 
 #[test]
 fn deserialize_actions_test() {
+    // Test json returns correct actions
+    let data_simple = json!({"building": { "view": true, "meter": {"create":true}}, "user": {"edit": true}, "simple_action": true});
+    match data_simple {
+        Value::Object(map) => match std::panic::catch_unwind(|| deserialize_actions(0, "", &map)) {
+            Ok(actions) => {
+                assert_eq!(
+                    actions,
+                    HashSet::from([
+                        String::from("building.view"),
+                        String::from("building.meter.create"),
+                        String::from("user.edit"),
+                        String::from("simple_action")
+                    ])
+                )
+            }
+            Err(_) => panic!("operation should not return error"),
+        },
+        _ => panic!("error in test data should be a Value::Object",),
+    };
+
+    // Test json is very simple, just object with values
+    let data_simple = json!({"view": true, "create": true});
+    match data_simple {
+        Value::Object(map) => match std::panic::catch_unwind(|| deserialize_actions(0, "", &map)) {
+            Ok(actions) => {
+                assert_eq!(
+                    actions,
+                    HashSet::from([String::from("view"), String::from("create")])
+                )
+            }
+            Err(_) => panic!("operation should not return error"),
+        },
+        _ => panic!("error in test data should be a Value::Object",),
+    };
+
     // Test MAX_JSON_DEPTH_ALLOWED reached
     let data_too_much_nesting = json!({"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {"obj": {}}}}}}}}}}}}}}}}}}}}}});
     match data_too_much_nesting {
@@ -11,7 +46,7 @@ fn deserialize_actions_test() {
             Ok(_) => panic!("operation should have panicked for MAX_JSON_DEPTH_ALLOWED exceeded"),
             Err(_) => (),
         },
-        _ => panic!("error in test data shoul be a Value::Object",),
+        _ => panic!("error in test data should be a Value::Object",),
     };
 
     // Test MAX_JSON_DEPTH_ALLOWED reached not starting in 0
@@ -29,7 +64,7 @@ fn deserialize_actions_test() {
             // Should not panic
             deserialize_actions(16, "", &map);
         }
-        _ => panic!("error in test data shoul be a Value::Object",),
+        _ => panic!("error in test data should be a Value::Object",),
     };
 
     // Test json_string has not valid value in object
@@ -47,7 +82,7 @@ fn deserialize_actions_test() {
             }
             Err(_) => (),
         },
-        _ => panic!("error in test data shoul be a Value::Object",),
+        _ => panic!("error in test data should be a Value::Object",),
     };
     match data_not_valid2 {
         Value::Object(map) => match std::panic::catch_unwind(|| deserialize_actions(0, "", &map)) {
