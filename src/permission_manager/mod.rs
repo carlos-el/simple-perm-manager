@@ -6,7 +6,6 @@ use uuid::Uuid;
 #[cfg(test)]
 mod tests;
 
-
 #[derive(Debug)]
 pub struct PermissionManager {
     universe: Permission,
@@ -19,12 +18,18 @@ impl PermissionManager {
 
         PermissionManager {
             universe: Permission::from_actions(&universe_actions, &Some(id)),
-            id
+            id,
         }
     }
 
-    // TODO Not implemented
-    // pub fn from_json(json: String) -> PermissionManager;
+    pub fn from_json(actions_json: &str) -> PermissionManager {
+        let id = Uuid::new_v4();
+
+        PermissionManager {
+            universe: Permission::from_json(actions_json, &Some(id)),
+            id,
+        }
+    }
 
     pub fn get_universe(&self) -> Permission {
         self.universe.clone()

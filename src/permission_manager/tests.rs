@@ -10,7 +10,41 @@ fn from_actions_test() {
     ]);
     let pm = PermissionManager::from_actions(actions.clone());
 
-    assert_eq!(*pm.universe.get_actions(), actions);
+    assert_eq!(*pm.get_universe().get_actions(), actions);
+}
+
+#[test]
+fn from_json_test() {
+    // Create 2 equals sets of actions in different formats
+    let actions = HashSet::from([
+        String::from("building.view"),
+        String::from("building.meter.create"),
+        String::from("building.room.edit"),
+        String::from("user.delete"),
+    ]);
+
+    let actions_json = r#"
+    {
+        "building": {
+          "view": true,
+          "meter": {
+            "create": true
+          },
+          "room": {
+            "edit": true
+          }
+        },
+        "user": {
+            "delete": true
+          }
+    }"#;
+
+    // Create 2 manager using the actions sets
+    let pm = PermissionManager::from_json(actions_json);
+    let pm2 = PermissionManager::from_actions(actions);
+
+    // Manager actions must be the same as set actions are equal
+    assert_eq!(*pm.get_universe().get_actions(), *pm2.get_universe().get_actions());
 }
 
 #[test]
