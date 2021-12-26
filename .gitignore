@@ -16,3 +16,7 @@ Cargo.lock
 
 /target
 #Cargo.lock
+
+
+# Exclude test coverage reports
+tarpaulin-report.html
