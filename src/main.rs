@@ -16,24 +16,6 @@ fn main() {
     String::from("user.delete"),
   ]));
 
-  let pm2 = PermissionManager::from_json(
-    r#"
-    {
-        "building": {
-          "view": true,
-          "meter": {
-            "create": true
-          },
-          "room": {
-            "edit": true
-          }
-        },
-        "user": {
-            "delete": true
-          }
-    }"#,
-  );
-
   let p1 = pm.perm_from_actions(HashSet::from([
     String::from("building.create"),
     String::from("building.view"),
@@ -48,7 +30,6 @@ fn main() {
   let p3 = pm.perm_from_actions(HashSet::from([String::from("building.edit")]));
 
   println!("Universe: {:#?}", pm.get_universe());
-  println!("Universe 2: {:#?}", pm2.get_universe());
   println!("Union: {:#?}", p1.union(&p2));
   println!("Diff: {:#?}", p1.difference(&p2));
   println!("Contains 1: {:#?}", p1.contains(&p2));
@@ -74,5 +55,33 @@ fn main() {
 
   let my_perm = Permission::from_json(data, &None);
   println!("From JSON: {:#?}", my_perm);
-  println!("To JSON: {:#?}", my_perm.to_json())
+  println!("To JSON: {:#?}", my_perm.to_json());
+
+  let pm2 = PermissionManager::from_json(
+    r#"
+    {
+        "building": {
+          "view": true,
+          "meter": {
+            "create": true
+          },
+          "room": {
+            "edit": true
+          }
+        },
+        "user": {
+            "delete": true
+          }
+    }"#,
+  );
+
+  let my_perm_json = pm2.perm_from_json(
+    r#"
+  {
+      "user": {
+          "delete": true
+        }
+  }"#,
+  );
+  println!("From JSON 2: {:#?}", my_perm_json);
 }

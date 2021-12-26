@@ -44,7 +44,10 @@ fn from_json_test() {
     let pm2 = PermissionManager::from_actions(actions);
 
     // Manager actions must be the same as set actions are equal
-    assert_eq!(*pm.get_universe().get_actions(), *pm2.get_universe().get_actions());
+    assert_eq!(
+        *pm.get_universe().get_actions(),
+        *pm2.get_universe().get_actions()
+    );
 }
 
 #[test]
@@ -91,10 +94,35 @@ fn perm_from_actions_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
     let pm = PermissionManager::from_actions(actions.clone());
 
+    // Ensure method panics is an unrecognized action is supplied
     match std::panic::catch_unwind(|| {
         pm.perm_from_actions(HashSet::from([String::from("other")]));
     }) {
-        Ok(_) => panic!("actions supplied for creating a permission are not present in permssion manager universe"),
+        Ok(_) => panic!("actions supplied for creating a permission are not present in permission manager universe"),
         Err(_) => (),
     }
+
+    let p = pm.perm_from_actions(HashSet::from([String::from("view")]));
+
+    // Ensure permission created is valid for the manager
+    assert_eq!(pm.validate_perm(&p), true);
+}
+
+#[test]
+fn perm_from_json_test() {
+    let actions = HashSet::from([String::from("view"), String::from("create")]);
+    let pm = PermissionManager::from_actions(actions.clone());
+
+    // Ensure method panics is an unrecognized action is supplied
+    match std::panic::catch_unwind(|| {
+        pm.perm_from_json(r#"{ "other": true }"#);
+    }) {
+        Ok(_) => panic!("actions supplied for creating a permission are not present in permission manager universe"),
+        Err(_) => (),
+    }
+
+    let p = pm.perm_from_json(r#"{ "view": true, "create": true }"#);
+
+    // Ensure permission created is valid for the manager
+    assert_eq!(pm.validate_perm(&p), true);
 }

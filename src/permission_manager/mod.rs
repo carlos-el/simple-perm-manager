@@ -49,7 +49,13 @@ impl PermissionManager {
         perm
     }
 
-    // TODO Not implemented
-    // pub fn perm_from_str(&self, actions_str: String) -> Permission;
-    // pub fn perm_from_json(&self, actions_json: String) -> Permission;
+    pub fn perm_from_json(&self, actions_json: &str) -> Permission {
+        let perm = Permission::from_json(actions_json, &Some(self.id));
+
+        if !self.validate_perm(&perm) {
+            panic!("Actions for Permission creation not allowed in PermissionManager or Permission id does not correspond to Manager id")
+        }
+
+        perm
+    }
 }
