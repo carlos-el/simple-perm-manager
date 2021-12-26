@@ -5,7 +5,7 @@ use permission_manager::PermissionManager;
 use std::collections::HashSet;
 
 fn main() {
-  let pm = PermissionManager::from_actions(HashSet::from([
+  let pm = PermissionManager::from_actions(&HashSet::from([
     String::from("building.create"),
     String::from("building.view"),
     String::from("building.edit"),
@@ -16,18 +16,18 @@ fn main() {
     String::from("user.delete"),
   ]));
 
-  let p1 = pm.perm_from_actions(HashSet::from([
+  let p1 = pm.perm_from_actions(&HashSet::from([
     String::from("building.create"),
     String::from("building.view"),
     String::from("building.edit"),
   ]));
 
-  let p2 = pm.perm_from_actions(HashSet::from([
+  let p2 = pm.perm_from_actions(&HashSet::from([
     String::from("building.edit"),
     String::from("building.delete"),
   ]));
 
-  let p3 = pm.perm_from_actions(HashSet::from([String::from("building.edit")]));
+  let p3 = pm.perm_from_actions(&HashSet::from([String::from("building.edit")]));
 
   println!("Universe: {:#?}", pm.get_universe());
   println!("Union: {:#?}", p1.union(&p2));

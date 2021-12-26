@@ -8,7 +8,7 @@ fn from_actions_test() {
         String::from("edit"),
         String::from("delete"),
     ]);
-    let pm = PermissionManager::from_actions(actions.clone());
+    let pm = PermissionManager::from_actions(&actions);
 
     assert_eq!(*pm.get_universe().get_actions(), actions);
 }
@@ -41,7 +41,7 @@ fn from_json_test() {
 
     // Create 2 manager using the actions sets
     let pm = PermissionManager::from_json(actions_json);
-    let pm2 = PermissionManager::from_actions(actions);
+    let pm2 = PermissionManager::from_actions(&actions);
 
     // Manager actions must be the same as set actions are equal
     assert_eq!(
@@ -58,7 +58,7 @@ fn get_universe_test() {
         String::from("edit"),
         String::from("delete"),
     ]);
-    let pm = PermissionManager::from_actions(actions.clone());
+    let pm = PermissionManager::from_actions(&actions);
 
     assert_eq!(*pm.get_universe().get_actions(), actions);
 }
@@ -72,11 +72,11 @@ fn validate_perm_test() {
         String::from("edit"),
         String::from("delete"),
     ]);
-    let pm = PermissionManager::from_actions(actions.clone());
-    let pm_second = PermissionManager::from_actions(actions.clone());
+    let pm = PermissionManager::from_actions(&actions);
+    let pm_second = PermissionManager::from_actions(&actions);
 
-    let managed_perm = pm.perm_from_actions(actions.clone());
-    let managed_perm_diff_manager = pm_second.perm_from_actions(actions.clone());
+    let managed_perm = pm.perm_from_actions(&actions);
+    let managed_perm_diff_manager = pm_second.perm_from_actions(&actions);
     let unmanaged = Permission::from_actions(&actions, &None);
     let unmanaged_diff_actions = Permission::from_actions(&actions2, &None);
     // Only possible to create this perm in tests as PermissionManager id (pm.id) should not be obtained in code
@@ -92,17 +92,17 @@ fn validate_perm_test() {
 #[test]
 fn perm_from_actions_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
-    let pm = PermissionManager::from_actions(actions.clone());
+    let pm = PermissionManager::from_actions(&actions);
 
     // Ensure method panics is an unrecognized action is supplied
     match std::panic::catch_unwind(|| {
-        pm.perm_from_actions(HashSet::from([String::from("other")]));
+        pm.perm_from_actions(&HashSet::from([String::from("other")]));
     }) {
         Ok(_) => panic!("actions supplied for creating a permission are not present in permission manager universe"),
         Err(_) => (),
     }
 
-    let p = pm.perm_from_actions(HashSet::from([String::from("view")]));
+    let p = pm.perm_from_actions(&HashSet::from([String::from("view")]));
 
     // Ensure permission created is valid for the manager
     assert_eq!(pm.validate_perm(&p), true);
@@ -111,7 +111,7 @@ fn perm_from_actions_test() {
 #[test]
 fn perm_from_json_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
-    let pm = PermissionManager::from_actions(actions.clone());
+    let pm = PermissionManager::from_actions(&actions);
 
     // Ensure method panics is an unrecognized action is supplied
     match std::panic::catch_unwind(|| {

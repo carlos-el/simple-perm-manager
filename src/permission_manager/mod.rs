@@ -13,7 +13,7 @@ pub struct PermissionManager {
 }
 
 impl PermissionManager {
-    pub fn from_actions(universe_actions: HashSet<String>) -> PermissionManager {
+    pub fn from_actions(universe_actions: &HashSet<String>) -> PermissionManager {
         let id = Uuid::new_v4();
 
         PermissionManager {
@@ -39,7 +39,7 @@ impl PermissionManager {
         self.universe.has_same_manager(perm) && self.universe.contains(perm)
     }
 
-    pub fn perm_from_actions(&self, actions: HashSet<String>) -> Permission {
+    pub fn perm_from_actions(&self, actions: &HashSet<String>) -> Permission {
         let perm = Permission::from_actions(&actions, &Some(self.id));
 
         if !self.validate_perm(&perm) {
