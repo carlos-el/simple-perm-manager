@@ -4,6 +4,8 @@ use permission::Permission;
 use permission_manager::PermissionManager;
 use std::collections::HashSet;
 
+// Excludes main from test coverage as it is just for demo purposes
+#[cfg(not(tarpaulin_include))]
 fn main() {
   let pm = PermissionManager::from_actions(&HashSet::from([
     String::from("building.create"),
