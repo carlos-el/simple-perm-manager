@@ -79,10 +79,7 @@ pub fn serialize_actions(actions: &HashSet<String>) -> Map<String, Value> {
                 // Move map pointer to the map stored for the current word
                 map_pointer = match map_pointer.get_mut(&String::from(*obj)) {
                     Some(Value::Object(x)) => x,
-                    Some(y) => panic!(
-                        "unexpected error in map creation, value should had been a Value::Object,{}", y
-                    ),
-                    None => panic!(
+                    _ => panic!(
                         "unexpected error in map creation, value should had been a Value::Object"
                     ),
                 };
