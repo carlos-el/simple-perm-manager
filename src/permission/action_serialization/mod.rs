@@ -69,7 +69,7 @@ pub fn serialize_actions(actions: &HashSet<String>) -> Map<String, Value> {
                 map_pointer = match map_pointer.get_mut(&String::from(*obj)) {
                     Some(Value::Object(x)) => x,
                     _ => panic!(
-                        "1unexpected error in map creation, value should had been a Value::Object"
+                        "unexpected error in map creation, value should had been a Value::Object"
                     ),
                 }
             } else {
@@ -80,10 +80,10 @@ pub fn serialize_actions(actions: &HashSet<String>) -> Map<String, Value> {
                 map_pointer = match map_pointer.get_mut(&String::from(*obj)) {
                     Some(Value::Object(x)) => x,
                     Some(y) => panic!(
-                        "3unexpected error in map creation, value should had been a Value::Object,{}", y
+                        "unexpected error in map creation, value should had been a Value::Object,{}", y
                     ),
                     None => panic!(
-                        "4unexpected error in map creation, value should had been a Value::Object"
+                        "unexpected error in map creation, value should had been a Value::Object"
                     ),
                 };
             }
