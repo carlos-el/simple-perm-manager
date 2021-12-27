@@ -43,6 +43,7 @@ impl Permission {
             Value::Object(map) => {
                 actions_generated = action_serialization::deserialize_actions(0, "", &map);
             }
+            // This will never be reached as Values returned from a serde 'from_str' will always be Object
             _ => panic!("wrong format in permission json string"),
         }
 
