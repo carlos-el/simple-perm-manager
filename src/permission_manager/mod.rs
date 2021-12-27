@@ -17,7 +17,7 @@ impl PermissionManager {
         let id = Uuid::new_v4();
 
         PermissionManager {
-            universe: Permission::from_actions(&universe_actions, &Some(id)),
+            universe: Permission::from_actions(universe_actions, &Some(id)),
             id,
         }
     }
@@ -40,7 +40,7 @@ impl PermissionManager {
     }
 
     pub fn perm_from_actions(&self, actions: &HashSet<String>) -> Permission {
-        let perm = Permission::from_actions(&actions, &Some(self.id));
+        let perm = Permission::from_actions(actions, &Some(self.id));
 
         if !self.validate_perm(&perm) {
             panic!("Actions for Permission creation not allowed in PermissionManager or Permission id does not correspond to Manager id")
