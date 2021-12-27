@@ -315,7 +315,7 @@ fn difference_test_perm_diff_manager() {
 
     match std::panic::catch_unwind(|| {
         assert_eq!(
-            *p1.union(&diff_id).get_actions(),
+            *p1.difference(&diff_id).get_actions(),
             HashSet::from([String::from("view"), String::from("create")])
         );
     }) {
@@ -325,7 +325,7 @@ fn difference_test_perm_diff_manager() {
 
     match std::panic::catch_unwind(|| {
         assert_eq!(
-            *p1.union(&none_id).get_actions(),
+            *p1.difference(&none_id).get_actions(),
             HashSet::from([String::from("view"), String::from("create")])
         );
     }) {
