@@ -1,0 +1,8 @@
+[package]
+name = "tools"
+version = "0.1.0"
+# Never publish tasks to crates io
+publish = false
+
+# Dependencies are isolated from the main crate.
+[dependencies]

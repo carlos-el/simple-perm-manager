@@ -1,0 +1,4 @@
+[alias]
+dependencies = "run --package tools --bin dependencies"
+syntax = "run --package tools --bin syntax"
+coverage = "run --package tools --bin coverage"

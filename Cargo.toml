@@ -5,6 +5,10 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+# Add task runner package functionalities
+members = ["tools"]
+
 [dependencies]
 uuid = { version = "0.8", features = ["v4"] }
 serde_json = "1.0"
