@@ -6,6 +6,12 @@ use uuid::Uuid;
 #[cfg(test)]
 mod tests;
 
+/// This is usually what you want.  
+/// Allows permission instantiation and validation against a defined reference configuration.
+/// 
+/// A `PermissionManager` is created using a reference permission configuration (universe) of the permissions it can hold.  
+/// All permissions created by a `PermissionManager` will be validated against the reference permission used for this 
+/// `PermissionManager` and can only operate with other permissions belonging to the same `PermissionManager`.
 #[derive(Debug)]
 pub struct PermissionManager {
     universe: Permission,

@@ -7,15 +7,20 @@ use uuid::Uuid;
 #[cfg(test)]
 mod tests;
 
-// Struct for managing permissions. Permissions are modeled as a simple set of actions
-// Operations can be done between them.
-// There are two types of permissions, managed and unmanaged:
-//  - Managed permissions:
-//      - Have a manager_id different from None.
-//      - Can only operate with other managed permissions with same manager_id.
-//  - Unmanaged permissions:
-//      - Its manager_id is None.
-//      - Can only operate with any other unmanaged permission.
+/// Struct for basic `Permission` instantiation, operation and serialization.  
+/// `Permission`s are modeled as a simple sets of actions.  
+/// - There are two types of `Permission`s, managed and unmanaged:
+///     - Managed permissions:
+///         - Tied to a `PermissionManager`.
+///         - Can only operate with managed permissions of the same `PermissionManager`.
+///         - Created using a `PermissionManager` instance.
+///     - Unmanaged permissions:
+///         - Not tied to a `PermissionManager`.
+///         - Can only operate with any unmanaged permission.
+/// 
+/// Please note that, although possible, it is not advisable to use unmanaged permissions 
+/// unless your permissions are not really restricted by any common structure or management.
+/// Instead your should probably use Managed permissions within a `PermissionManager`.
 #[derive(Clone, Debug)]
 pub struct Permission {
     actions: HashSet<String>,
