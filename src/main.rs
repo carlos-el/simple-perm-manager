@@ -32,6 +32,7 @@ fn main() {
     let p3 = pm.perm_from_actions(&HashSet::from([String::from("building.edit")]));
 
     println!("Universe: {:#?}", pm.get_universe());
+    println!("Perm 1 is managed: {:#?}", p1.is_managed());
     println!("Union: {:#?}", p1.union(&p2));
     println!("Diff: {:#?}", p1.difference(&p2));
     println!("Contains 1: {:#?}", p1.contains(&p2));
