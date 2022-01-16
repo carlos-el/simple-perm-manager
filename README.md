@@ -4,6 +4,8 @@ Allows permissions to be attached to a system as required by the developer (i.e:
 ## Usage
 Here it is an usage example for managed permissions in a blog based site.
 ```rust
+use simple_perm_manager::PermissionManager
+
 // Create manager with a reference permissions set.
 let manager = PermissionManager::from_json(
   r#"{
