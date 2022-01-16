@@ -1,4 +1,5 @@
-simple-perm-manager is a very simple and flexible library for working working and operating with permission sets. It allows for coupling permissions to a system as required by the developer (i.e: attribute based, per object permission, etc). 
+simple-perm-manager is a very simple and flexible library for working and operating with permission sets.  
+Allows permissions to be attached to a system as required by the developer (i.e: attribute based, per object permission, etc) while maintaining low granularity.
 
 ## Usage
 Here it is an usage example for managed permissions in a blog based site.
