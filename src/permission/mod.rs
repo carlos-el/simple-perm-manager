@@ -337,6 +337,32 @@ impl Permission {
         Permission::from_actions(&actions_union, &self.manager_id)
     }
 
+    /// Returns a [`Permission`](crate::Permission) containing the actions that are in the calling
+    /// [`Permission`](crate::Permission) but not in the [`Permission`](crate::Permission) used as argument.
+    /// 
+    /// # Examples:
+    /// 
+    /// ```
+    /// use simple_perm_manager::Permission;
+    /// use simple_perm_manager::PermissionManager;
+    ///
+    /// let manager = PermissionManager::from_json(&String::from(r#"{
+    ///     "create": true,
+    ///     "view": true,
+    ///     "edit": true
+    /// }"#));
+    ///
+    /// // Create 2 managed Permissions
+    /// let perm_foo_bar = manager.perm_from_json(&String::from(r#"{"create": true, "view": true, "edit": true}"#));
+    /// let perm_bar = manager.perm_from_json(&String::from(r#"{"create": true, "view": true}"#));
+    ///
+    /// // Make the difference
+    /// let perm_foo = perm_foo_bar.difference(&perm_bar);
+    ///
+    /// // Actions in 'perm_foo' should be just 'edit'.
+    /// println!("'perm_foo' actions as JSON: {:#?}", perm_foo.to_json());
+    /// ```
+    /// 
     /// # Panics:
     ///
     /// Panics if the calling [`Permission`](crate::Permission) and the [`Permission`](crate::Permission)
@@ -373,6 +399,29 @@ impl Permission {
         Permission::from_actions(&actions_diff, &self.manager_id)
     }
 
+    /// Returns `true` if the [`Permission`](crate::Permission) calling contains at least 
+    /// all the actions in the [`Permission`](crate::Permission) used as argument.
+    /// 
+    /// # Examples:
+    /// 
+    /// ```
+    /// use simple_perm_manager::Permission;
+    /// use simple_perm_manager::PermissionManager;
+    ///
+    /// let manager = PermissionManager::from_json(&String::from(r#"{
+    ///     "create": true,
+    ///     "view": true,
+    ///     "edit": true
+    /// }"#));
+    ///
+    /// // Create 2 managed Permissions
+    /// let perm_foo_bar = manager.perm_from_json(&String::from(r#"{"create": true, "view": true}"#));
+    /// let perm_bar = manager.perm_from_json(&String::from(r#"{"create": true}"#));
+    /// 
+    /// assert!(perm_foo_bar.contains(&perm_bar));
+    /// assert!(!perm_bar.contains(&perm_foo_bar));
+    /// ```
+    /// 
     /// # Panics:
     ///
     /// Panics if the calling [`Permission`](crate::Permission) and the [`Permission`](crate::Permission)
@@ -403,6 +452,26 @@ impl Permission {
         return self.get_actions().is_superset(other.get_actions());
     }
 
+    /// Returns `true` if the [`Permission`](crate::Permission) calling contains the action used as argument.
+    ///
+    /// # Examples:
+    /// 
+    /// ```
+    /// use simple_perm_manager::Permission;
+    /// use simple_perm_manager::PermissionManager;
+    ///
+    /// let manager = PermissionManager::from_json(&String::from(r#"{
+    ///     "create": true,
+    ///     "view": true,
+    ///     "edit": true
+    /// }"#));
+    ///
+    /// // Create Permission
+    /// let perm = manager.perm_from_json(&String::from(r#"{"create": true, "view": true}"#));
+    /// 
+    /// assert!(perm.contains_action("create"));
+    /// assert!(!perm.contains_action("other"));
+    /// ```
     pub fn contains_action(&self, action_str: &str) -> bool {
         self.get_actions().contains(action_str)
     }
