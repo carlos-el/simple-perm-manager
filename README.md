@@ -1,4 +1,7 @@
-simple-perm-manager is a very simple and flexible library for working and operating with permission sets.  
+[![Test coverage](https://github.com/carlos-el/simple-perm-manager/actions/workflows/test-coverage.yml/badge.svg)](https://github.com/carlos-el/simple-perm-manager/actions/workflows/test-coverage.yml)
+[![codecov](https://codecov.io/gh/carlos-el/simple-perm-manager/branch/main/graph/badge.svg?token=8CCZEX8MMN)](https://codecov.io/gh/carlos-el/simple-perm-manager)
+
+`simple-perm-manager` is a very simple and flexible library for working and operating with permission sets.  
 Allows permissions to be attached to a system as required by the developer (i.e: attribute based, per object permission, etc) while maintaining low granularity.
 
 ## Usage
