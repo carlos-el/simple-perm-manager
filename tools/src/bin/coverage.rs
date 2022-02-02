@@ -14,7 +14,7 @@ fn main() {
     assert!(Command::new("cargo")
         .arg("tarpaulin")
         .arg("-o")
-        .arg("Html")
+        .arg("Lcov")
         .arg("--ignore-tests")
         .status()
         .expect("task coverage failed")
