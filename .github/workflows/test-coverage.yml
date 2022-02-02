@@ -1,0 +1,21 @@
+name: Test coverage
+on: [push]
+jobs:
+  tests-and-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+      - name: Install dependencies
+        run: cargo dependencies
+      - name: Check syntax
+        run: cargo syntax
+      - name: Run tests with code coverage
+        run: cargo coverage
+      - name: Upload coverage to codecov
+        uses: codecov/codecov-action@v2
+        with: 
+          # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          fail_ci_if_error:     true
