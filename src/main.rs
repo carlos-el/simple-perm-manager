@@ -31,14 +31,20 @@ fn main() {
 
     let p3 = pm.perm_from_actions(&HashSet::from([String::from("building.edit")]));
 
+    let p4 = Permission::from_actions(&HashSet::from([
+      String::from("building.create"),
+      String::from("building.view"),
+  ]));
+
     println!("Universe: {:#?}", pm.get_universe());
-    println!("Perm 1 is managed: {:#?}", p1.is_managed());
+    println!("Perm 1 is managed?: {:#?}", p1.is_managed());
     println!("Union: {:#?}", p1.union(&p2));
     println!("Diff: {:#?}", p1.difference(&p2));
     println!("Contains 1: {:#?}", p1.contains(&p2));
     println!("Contains 2: {:#?}", p1.contains(&p3));
     println!("ContAction 1: {:#?}", p1.contains_action("building.edit"));
     println!("ContAction 2: {:#?}", p1.contains_action("building.delete"));
+    println!("Perm 4 is managed?: {:#?}", p4.is_managed());
 
     let data = r#"
     {
@@ -56,7 +62,7 @@ fn main() {
           }
     }"#;
 
-    let my_perm = Permission::from_json_and_uuid(data, &None);
+    let my_perm = Permission::from_json(data);
     println!("From JSON: {:#?}", my_perm);
     println!("To JSON: {:#?}", my_perm.to_json());
 
