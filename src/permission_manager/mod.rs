@@ -50,14 +50,14 @@ impl PermissionManager {
         let id = Uuid::new_v4();
 
         PermissionManager {
-            universe: Permission::from_actions(universe_actions, &Some(id)),
+            universe: Permission::from_actions_and_uuid(universe_actions, &Some(id)),
             id,
         }
     }
 
     /// Creates a new [`PermissionManager`](crate::PermissionManager) with a universe [`Permission`](crate::Permission) containing all the actions specified in the actions JSON string provided.
     ///
-    /// The adecuated format for the actions JSON string is explained [here](crate::Permission::from_json()).
+    /// The adecuated format for the actions JSON string is explained [here](crate::Permission::from_json_and_uuid()).
     ///
     /// # Examples:
     ///
@@ -79,7 +79,7 @@ impl PermissionManager {
     /// ```
     /// # Panics:
     ///
-    /// Panics in the same cases that [Permission::from_json()](crate::Permission::from_json()) does.
+    /// Panics in the same cases that [Permission::from_json_and_uuid()](crate::Permission::from_json_and_uuid()) does.
     /// - Panics if `universe_actions_json` argument is not valid JSON string.
     /// - Panics if `universe_actions_json` argument is not valid format for Permission actions.
     /// - Panics if `universe_actions_json` argument is s JSON with objects nested to a depth of more than 20.
@@ -87,7 +87,7 @@ impl PermissionManager {
         let id = Uuid::new_v4();
 
         PermissionManager {
-            universe: Permission::from_json(universe_actions_json, &Some(id)),
+            universe: Permission::from_json_and_uuid(universe_actions_json, &Some(id)),
             id,
         }
     }
@@ -135,7 +135,7 @@ impl PermissionManager {
     /// }"#));
     ///
     /// // Create UNmanaged Permission (actions do not have to be a subset of the manager universe actions)
-    /// let unmanaged_perm = Permission::from_json(&String::from(r#"{
+    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{
     ///     "other_action": true
     /// }"#), &None);
     ///
@@ -179,7 +179,7 @@ impl PermissionManager {
     /// let panics = manager.perm_from_actions(&HashSet::from([String::from("other_action")]));
     /// ```
     pub fn perm_from_actions(&self, actions: &HashSet<String>) -> Permission {
-        let perm = Permission::from_actions(actions, &Some(self.id));
+        let perm = Permission::from_actions_and_uuid(actions, &Some(self.id));
 
         if !self.validate_perm(&perm) {
             panic!("Actions for Permission creation not allowed in PermissionManager or Permission id does not correspond to Manager id")
@@ -219,7 +219,7 @@ impl PermissionManager {
     /// let panics = manager.perm_from_json(&String::from(r#"{"other_action": true}"#));
     /// ```
     pub fn perm_from_json(&self, actions_json: &str) -> Permission {
-        let perm = Permission::from_json(actions_json, &Some(self.id));
+        let perm = Permission::from_json_and_uuid(actions_json, &Some(self.id));
 
         if !self.validate_perm(&perm) {
             panic!("Actions for Permission creation not allowed in PermissionManager or Permission id does not correspond to Manager id")

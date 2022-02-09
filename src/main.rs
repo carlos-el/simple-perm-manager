@@ -56,7 +56,7 @@ fn main() {
           }
     }"#;
 
-    let my_perm = Permission::from_json(data, &None);
+    let my_perm = Permission::from_json_and_uuid(data, &None);
     println!("From JSON: {:#?}", my_perm);
     println!("To JSON: {:#?}", my_perm.to_json());
 

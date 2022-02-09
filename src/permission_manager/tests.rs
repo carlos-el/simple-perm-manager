@@ -77,10 +77,10 @@ fn validate_perm_test() {
 
     let managed_perm = pm.perm_from_actions(&actions);
     let managed_perm_diff_manager = pm_second.perm_from_actions(&actions);
-    let unmanaged = Permission::from_actions(&actions, &None);
-    let unmanaged_diff_actions = Permission::from_actions(&actions2, &None);
+    let unmanaged = Permission::from_actions_and_uuid(&actions, &None);
+    let unmanaged_diff_actions = Permission::from_actions_and_uuid(&actions2, &None);
     // Only possible to create this perm in tests as PermissionManager id (pm.id) should not be obtained in code
-    let false_managed_perm_diff_actions = Permission::from_actions(&actions2, &Some(pm.id));
+    let false_managed_perm_diff_actions = Permission::from_actions_and_uuid(&actions2, &Some(pm.id));
 
     assert_eq!(pm.validate_perm(&managed_perm), true);
     assert_eq!(pm.validate_perm(&managed_perm_diff_manager), false);
