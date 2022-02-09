@@ -20,3 +20,4 @@ Cargo.lock
 
 # Exclude test coverage reports
 tarpaulin-report.html
+lcov.info
