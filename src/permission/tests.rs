@@ -27,7 +27,7 @@ fn from_json_test() {
     let data = r#"{
         "building": {
             "view": true,
-            "meter": { "view": true },
+            "meter": { "view": true }
         },
         "user": { "view": true }
     }"#;
