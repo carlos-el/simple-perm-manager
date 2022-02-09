@@ -60,7 +60,7 @@ impl Permission {
     }
 
     /// Creates a new [`Permission`](crate::Permission) containing all the actions specified in the actions set provided.  
-    /// If you are using [`Permission`](crate::Permission) crate without a [`PermissionManager`](crate::PermissionManager) 
+    /// If you are using [`Permission`](crate::Permission) crate without a [`PermissionManager`](crate::PermissionManager)
     /// you probably want to use the [`from_actions`](crate::Permission::from_actions) constructor instead.
     ///
     /// # Arguments
@@ -86,7 +86,10 @@ impl Permission {
     ///
     /// assert_eq!(actions, *perm.get_actions());
     /// ```
-    pub fn from_actions_and_uuid(actions: &HashSet<String>, manager_id: &Option<Uuid>) -> Permission {
+    pub fn from_actions_and_uuid(
+        actions: &HashSet<String>,
+        manager_id: &Option<Uuid>,
+    ) -> Permission {
         Permission {
             actions: actions.clone(),
             manager_id: *manager_id,
@@ -190,7 +193,7 @@ impl Permission {
     }
 
     /// Creates a new [`Permission`](crate::Permission) containing all the actions specified in the actions JSON string provided.  
-    /// If you are using [`Permission`](crate::Permission) crate without a [`PermissionManager`](crate::PermissionManager) 
+    /// If you are using [`Permission`](crate::Permission) crate without a [`PermissionManager`](crate::PermissionManager)
     /// you probably want to use the [`from_json`](crate::Permission::from_json) constructor instead.  
     /// JSON actions format and examples in [`from_json`](crate::Permission::from_json) applies to  this method as well.
     ///
