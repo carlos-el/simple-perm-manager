@@ -32,9 +32,9 @@ fn main() {
     let p3 = pm.perm_from_actions(&HashSet::from([String::from("building.edit")]));
 
     let p4 = Permission::from_actions(&HashSet::from([
-      String::from("building.create"),
-      String::from("building.view"),
-  ]));
+        String::from("building.create"),
+        String::from("building.view"),
+    ]));
 
     println!("Universe: {:#?}", pm.get_universe());
     println!("Perm 1 is managed?: {:#?}", p1.is_managed());
