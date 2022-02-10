@@ -68,11 +68,11 @@ fn from_json_and_uuid_test() {
         "user": { "view": true }
     }"#;
     let resulting_actions = HashSet::from([
-        String::from("building.view"),
-        String::from("building.create"),
-        String::from("building.meter.view"),
-        String::from("building.room.view"),
-        String::from("user.view"),
+        String::from("building:view"),
+        String::from("building:create"),
+        String::from("building:meter:view"),
+        String::from("building:room:view"),
+        String::from("user:view"),
     ]);
 
     let perm = Permission::from_json_and_uuid(data, &None);

@@ -112,7 +112,7 @@ assert_eq!(super_admin_perm.contains(&admin_perm), true);
 // Obtain set of permissions for what a super_admin can do that an admin can not.
 let diff = super_admin_perm.difference(&admin_perm);
 
-// Should print actions 'post.comment.delete' and 'user.ban'
+// Should print actions 'post:comment:delete' and 'user:ban'
 println!("super-admin/admin difference: \n{:#?}\n", diff.get_actions());
 
 // This should print the same as JSON (useful for db storage)
@@ -123,7 +123,7 @@ println!("super-admin/admin difference as json: \n{:#?}\n", diff.to_json());
 let new_admin_perm = admin_perm
     .union(&manager.perm_from_actions(&HashSet::from([String::from("post.comment.delete")])));
     
-// Should print admin actions plus 'post.comment.delete' action
+// Should print admin actions plus 'post:comment:delete' action
 println!("admin with additional perm as json: \n{:#?}", new_admin_perm.get_actions());
 ```
 More examples, operations and info about unmanaged permissions can be found in the docs.

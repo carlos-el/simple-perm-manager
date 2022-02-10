@@ -6,6 +6,7 @@ use std::collections::HashSet;
 mod tests;
 
 const MAX_JSON_DEPTH_ALLOWED: u8 = 20;
+const ACTION_DIVIDER: char = ':';
 
 pub fn deserialize_actions(
     current_depth: u8,
@@ -23,7 +24,7 @@ pub fn deserialize_actions(
         let action_value = if prefix.is_empty() {
             key.to_string()
         } else {
-            format!("{}.{}", prefix, key)
+            format!("{}{}{}", prefix, ACTION_DIVIDER, key)
         };
 
         match value {
@@ -55,7 +56,7 @@ pub fn serialize_actions(actions: &HashSet<String>) -> Map<String, Value> {
         // Declare a mutable pointer to the map start
         let mut map_pointer = &mut map;
         // Get objects in an action string
-        let objects: Vec<&str> = action.split('.').collect();
+        let objects: Vec<&str> = action.split(ACTION_DIVIDER).collect();
 
         // For each object
         for obj in &objects {

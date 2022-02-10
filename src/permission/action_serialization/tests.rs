@@ -11,9 +11,9 @@ fn deserialize_actions_test() {
         assert_eq!(
             actions,
             HashSet::from([
-                String::from("building.view"),
-                String::from("building.meter.create"),
-                String::from("user.edit"),
+                String::from("building:view"),
+                String::from("building:meter:create"),
+                String::from("user:edit"),
                 String::from("simple_action")
             ])
         )
@@ -89,12 +89,12 @@ fn deserialize_actions_test() {
 fn serialize_actions_test() {
     // Test normal actions to map
     let actions: HashSet<String> = HashSet::from([
-        String::from("building.view"),
-        String::from("building.create"),
-        String::from("building.meter.view"),
-        String::from("building.meter.readings.view"),
-        String::from("building.meter.readings.edit"),
-        String::from("user.view"),
+        String::from("building:view"),
+        String::from("building:create"),
+        String::from("building:meter:view"),
+        String::from("building:meter:readings:view"),
+        String::from("building:meter:readings:edit"),
+        String::from("user:view"),
     ]);
 
     let result_map = json!({

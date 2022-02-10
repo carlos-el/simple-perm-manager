@@ -17,10 +17,10 @@ fn from_actions_test() {
 fn from_json_test() {
     // Create 2 equals sets of actions in different formats
     let actions = HashSet::from([
-        String::from("building.view"),
-        String::from("building.meter.create"),
-        String::from("building.room.edit"),
-        String::from("user.delete"),
+        String::from("building:view"),
+        String::from("building:meter:create"),
+        String::from("building:room:edit"),
+        String::from("user:delete"),
     ]);
 
     let actions_json = r#"

@@ -115,7 +115,7 @@ impl Permission {
     ///     - Other object for creating a group.
     ///     - A boolean for the final action.
     /// - Maximum object nesting for JSON objects is set to 20.
-    /// - Groups preceding the final word of the full action created are divided by dots.
+    /// - Groups preceding the final word of the full action created are divided by colons (:).
     ///
     /// JSON simple actions.  
     /// Maps to actions: 'create', 'view', 'edit' and 'delete'.
@@ -129,7 +129,7 @@ impl Permission {
     /// ```
     ///
     /// JSON with nested groups and actions excluded.  
-    /// Maps to actions: 'user.create', 'user.edit', 'blog.view', 'blog.edit' and 'blog.comments.delete'.  
+    /// Maps to actions: 'user:create', 'user:edit', 'blog:view', 'blog:edit' and 'blog:comments:delete'.  
     /// This JSON has a nesting depth of 2 (because of blog and comments groups).
     /// ```json
     /// {
@@ -179,7 +179,7 @@ impl Permission {
     /// }"#);
     ///
     /// let perm = Permission::from_json(&actions_json);
-    /// // Should print a HashSet containing the elements 'user.create', 'user.edit' and 'blog.view'.
+    /// // Should print a HashSet containing the elements 'user:create', 'user:edit' and 'blog:view'.
     /// println!("Permission actions: {:#?}", perm.get_actions());
     /// ```
     ///
