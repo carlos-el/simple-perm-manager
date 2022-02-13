@@ -59,6 +59,7 @@ impl Permission {
         }
     }
 
+    #[doc(hidden)]
     /// Creates a new [`Permission`](crate::Permission) containing all the actions specified in the actions set provided.  
     /// If you are using [`Permission`](crate::Permission) crate without a [`PermissionManager`](crate::PermissionManager)
     /// you probably want to use the [`from_actions`](crate::Permission::from_actions) constructor instead.
@@ -192,6 +193,7 @@ impl Permission {
         Permission::from_json_and_uuid(actions_json, &None)
     }
 
+    #[doc(hidden)]
     /// Creates a new [`Permission`](crate::Permission) containing all the actions specified in the actions JSON string provided.  
     /// If you are using [`Permission`](crate::Permission) crate without a [`PermissionManager`](crate::PermissionManager)
     /// you probably want to use the [`from_json`](crate::Permission::from_json) constructor instead.  
