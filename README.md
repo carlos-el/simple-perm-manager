@@ -2,7 +2,7 @@
 [![codecov](https://codecov.io/gh/carlos-el/simple-perm-manager/branch/main/graph/badge.svg?token=8CCZEX8MMN)](https://codecov.io/gh/carlos-el/simple-perm-manager)
 
 `simple-perm-manager` is a very simple and flexible library for working and operating with permission sets.  
-Allows permissions to be attached to a system as required by the developer (i.e: attribute based, per object permission, etc) while maintaining low granularity.
+Allows permissions to be attached to a system as required by the developer (i.e: attribute based, per object permission, etc) while maintaining fine-grained, attribute based access control.
 
 ## Usage
 Here it is an usage example for managed permissions in a blog based site.
@@ -102,8 +102,8 @@ let super_admin_perm = manager.perm_from_json(
 );
 
 // Check access to a certain action like creating a post
-assert_eq!(unregistered_user_perm.contains_action("post.create"), false);
-assert_eq!(admin_perm.contains_action("post.create"), true);
+assert_eq!(unregistered_user_perm.contains_action("post:create"), false);
+assert_eq!(admin_perm.contains_action("post:create"), true);
 
 // Check if super_admin can do everything an admin can.
 assert_eq!(super_admin_perm.contains(&admin_perm), true);
@@ -121,7 +121,7 @@ println!("super-admin/admin difference as json: \n{:#?}\n", diff.to_json());
 
 // Add permission to an admin for deleting comments in posts
 let new_admin_perm = admin_perm
-    .union(&manager.perm_from_actions(&HashSet::from([String::from("post.comment.delete")])));
+    .union(&manager.perm_from_actions(&HashSet::from([String::from("post:comment:delete")])));
     
 // Should print admin actions plus 'post:comment:delete' action
 println!("admin with additional perm as json: \n{:#?}", new_admin_perm.get_actions());
