@@ -46,15 +46,15 @@ impl Permission {
     ///    String::from("view"),
     /// ]);
     ///
-    /// let perm = Permission::from_actions(&actions);
+    /// let perm = Permission::from_actions(actions.clone());
     /// // Should print a HashSet containing the elements 'create', 'view'.
     /// println!("Permission actions: {:#?}", perm.get_actions());
     ///
     /// assert_eq!(actions, *perm.get_actions());
     /// ```
-    pub fn from_actions(actions: &HashSet<String>) -> Permission {
+    pub fn from_actions(actions: HashSet<String>) -> Permission {
         Permission {
-            actions: actions.clone(),
+            actions,
             manager_id: None,
         }
     }
@@ -81,19 +81,16 @@ impl Permission {
     ///    String::from("view"),
     /// ]);
     ///
-    /// let perm = Permission::from_actions_and_uuid(&actions, &None);
+    /// let perm = Permission::from_actions_and_uuid(actions.clone(), None);
     /// // Should print a HashSet containing the elements 'create', 'view'.
     /// println!("Permission actions: {:#?}", perm.get_actions());
     ///
     /// assert_eq!(actions, *perm.get_actions());
     /// ```
-    pub fn from_actions_and_uuid(
-        actions: &HashSet<String>,
-        manager_id: &Option<Uuid>,
-    ) -> Permission {
+    pub fn from_actions_and_uuid(actions: HashSet<String>, manager_id: Option<Uuid>) -> Permission {
         Permission {
-            actions: actions.clone(),
-            manager_id: *manager_id,
+            actions,
+            manager_id,
         }
     }
 
@@ -190,7 +187,7 @@ impl Permission {
     /// - Panics if `actions_json` argument is not valid format for Permission actions.
     /// - Panics if `actions_json` argument is s JSON with objects nested to a depth of more than 20.
     pub fn from_json(actions_json: &str) -> Permission {
-        Permission::from_json_and_uuid(actions_json, &None)
+        Permission::from_json_and_uuid(actions_json, None)
     }
 
     #[doc(hidden)]
@@ -210,7 +207,7 @@ impl Permission {
     /// - Panics if `actions_json` argument is not valid JSON string.
     /// - Panics if `actions_json` argument is not valid format for Permission actions.
     /// - Panics if `actions_json` argument is s JSON with objects nested to a depth of more than 20.
-    pub fn from_json_and_uuid(actions_json: &str, manager_id: &Option<Uuid>) -> Permission {
+    pub fn from_json_and_uuid(actions_json: &str, manager_id: Option<Uuid>) -> Permission {
         let actions_generated: HashSet<String>;
         let actions_value: Value =
             serde_json::from_str(actions_json).expect("wrong format in permission json string");
@@ -225,7 +222,7 @@ impl Permission {
 
         Permission {
             actions: actions_generated,
-            manager_id: *manager_id,
+            manager_id,
         }
     }
 
@@ -237,10 +234,10 @@ impl Permission {
     /// use std::collections::HashSet;
     /// use simple_perm_manager::Permission;
     ///
-    /// let perm = Permission::from_actions_and_uuid(&HashSet::from([
+    /// let perm = Permission::from_actions_and_uuid(HashSet::from([
     ///    String::from("create"),
     ///    String::from("view"),
-    /// ]), &None);
+    /// ]), None);
     ///
     /// // Should print a JSON string like "{"create": true, "view": true}".
     /// println!("Permission actions as JSON: {:#?}", perm.to_json());
@@ -257,10 +254,10 @@ impl Permission {
     /// use std::collections::HashSet;
     /// use simple_perm_manager::Permission;
     ///
-    /// let perm = Permission::from_actions_and_uuid(&HashSet::from([
+    /// let perm = Permission::from_actions_and_uuid(HashSet::from([
     ///    String::from("create"),
     ///    String::from("view"),
-    /// ]), &None);
+    /// ]), None);
     ///
     /// // Should print an HashSet containing the elements 'create', and 'view'.
     /// println!("Permission actions as JSON: {:#?}", perm.get_actions());
@@ -291,7 +288,7 @@ impl Permission {
     /// // Create UNmanaged Permission
     /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{
     ///     "other_action": true
-    /// }"#), &None);
+    /// }"#), None);
     ///
     /// assert!(managed_perm.is_managed());
     /// assert!(!unmanaged_perm.is_managed());
@@ -320,7 +317,7 @@ impl Permission {
     /// let managed_perm_bar = manager_bar.perm_from_json(&String::from(r#"{"create": true}"#));
     ///
     /// // Create UNmanaged Permission
-    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{"create": true}"#), &None);
+    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{"create": true}"#), None);
     ///
     /// assert!(managed_perm_foo.has_same_manager(&managed_perm_foo_2));
     /// assert!(!managed_perm_foo.has_same_manager(&managed_perm_bar));
@@ -375,7 +372,7 @@ impl Permission {
     ///
     /// // Create managed Permission and UNmanaged one
     /// let managed_perm = manager.perm_from_json(&String::from(r#"{"create": true, "view": true}"#));
-    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{"view": true, "edit": true}"#), &None);
+    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{"view": true, "edit": true}"#), None);
     ///
     /// // This lines of code panics
     /// let panics = managed_perm.union(&unmanaged_perm);
@@ -391,7 +388,7 @@ impl Permission {
             .cloned()
             .collect();
 
-        Permission::from_actions_and_uuid(&actions_union, &self.manager_id)
+        Permission::from_actions_and_uuid(actions_union, self.manager_id)
     }
 
     /// Returns a [`Permission`](crate::Permission) containing the actions that are in the calling
@@ -437,7 +434,7 @@ impl Permission {
     ///
     /// // Create managed Permission and UNmanaged one
     /// let managed_perm = manager.perm_from_json(&String::from(r#"{"create": true, "view": true}"#));
-    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{"view": true, "edit": true}"#), &None);
+    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{"view": true, "edit": true}"#), None);
     ///
     /// // This lines of code panics
     /// let panics = managed_perm.difference(&unmanaged_perm);
@@ -453,7 +450,7 @@ impl Permission {
             .cloned()
             .collect();
 
-        Permission::from_actions_and_uuid(&actions_diff, &self.manager_id)
+        Permission::from_actions_and_uuid(actions_diff, self.manager_id)
     }
 
     /// Returns `true` if the [`Permission`](crate::Permission) calling contains at least
@@ -496,7 +493,7 @@ impl Permission {
     ///
     /// // Create managed Permission and UNmanaged one
     /// let managed_perm = manager.perm_from_json(&String::from(r#"{"create": true, "view": true}"#));
-    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{"view": true, "edit": true}"#), &None);
+    /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{"view": true, "edit": true}"#), None);
     ///
     /// // This lines of code panics
     /// let panics = managed_perm.contains(&unmanaged_perm);

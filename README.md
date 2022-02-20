@@ -121,7 +121,7 @@ println!("super-admin/admin difference as json: \n{:#?}\n", diff.to_json());
 
 // Add permission to an admin for deleting comments in posts
 let new_admin_perm = admin_perm
-    .union(&manager.perm_from_actions(&HashSet::from([String::from("post:comment:delete")])));
+    .union(&manager.perm_from_actions(HashSet::from([String::from("post:comment:delete")])));
     
 // Should print admin actions plus 'post:comment:delete' action
 println!("admin with additional perm as json: \n{:#?}", new_admin_perm.get_actions());

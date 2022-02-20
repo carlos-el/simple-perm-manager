@@ -7,7 +7,7 @@ use std::collections::HashSet;
 // Excludes main from test coverage as it is just for demo purposes
 #[cfg(not(tarpaulin_include))]
 fn main() {
-    let pm = PermissionManager::from_actions(&HashSet::from([
+    let pm = PermissionManager::from_actions(HashSet::from([
         String::from("building:create"),
         String::from("building:view"),
         String::from("building:edit"),
@@ -18,20 +18,20 @@ fn main() {
         String::from("user:delete"),
     ]));
 
-    let p1 = pm.perm_from_actions(&HashSet::from([
+    let p1 = pm.perm_from_actions(HashSet::from([
         String::from("building:create"),
         String::from("building:view"),
         String::from("building:edit"),
     ]));
 
-    let p2 = pm.perm_from_actions(&HashSet::from([
+    let p2 = pm.perm_from_actions(HashSet::from([
         String::from("building:edit"),
         String::from("building:delete"),
     ]));
 
-    let p3 = pm.perm_from_actions(&HashSet::from([String::from("building:edit")]));
+    let p3 = pm.perm_from_actions(HashSet::from([String::from("building:edit")]));
 
-    let p4 = Permission::from_actions(&HashSet::from([
+    let p4 = Permission::from_actions(HashSet::from([
         String::from("building:create"),
         String::from("building:view"),
     ]));

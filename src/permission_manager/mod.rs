@@ -40,17 +40,17 @@ impl PermissionManager {
     ///    String::from("delete"),
     /// ]);
     ///
-    /// let manager = PermissionManager::from_actions(&actions);
+    /// let manager = PermissionManager::from_actions(actions.clone());
     /// // Should print a HashSet containing the elements 'create', 'view', 'edit' and 'delete'.
     /// println!("Manager universe permission actions: {:#?}", manager.get_universe().get_actions());
     ///
     /// assert_eq!(actions, *manager.get_universe().get_actions());
     /// ```
-    pub fn from_actions(universe_actions: &HashSet<String>) -> PermissionManager {
+    pub fn from_actions(universe_actions: HashSet<String>) -> PermissionManager {
         let id = Uuid::new_v4();
 
         PermissionManager {
-            universe: Permission::from_actions_and_uuid(universe_actions, &Some(id)),
+            universe: Permission::from_actions_and_uuid(universe_actions, Some(id)),
             id,
         }
     }
@@ -87,7 +87,7 @@ impl PermissionManager {
         let id = Uuid::new_v4();
 
         PermissionManager {
-            universe: Permission::from_json_and_uuid(universe_actions_json, &Some(id)),
+            universe: Permission::from_json_and_uuid(universe_actions_json, Some(id)),
             id,
         }
     }
@@ -100,7 +100,7 @@ impl PermissionManager {
     /// use std::collections::HashSet;
     /// use simple_perm_manager::PermissionManager;
     ///
-    /// let manager = PermissionManager::from_actions(&HashSet::from([
+    /// let manager = PermissionManager::from_actions(HashSet::from([
     ///    String::from("create"),
     ///    String::from("view"),
     ///    String::from("edit"),
@@ -137,7 +137,7 @@ impl PermissionManager {
     /// // Create UNmanaged Permission (actions do not have to be a subset of the manager universe actions)
     /// let unmanaged_perm = Permission::from_json_and_uuid(&String::from(r#"{
     ///     "other_action": true
-    /// }"#), &None);
+    /// }"#), None);
     ///
     /// assert!(manager.validate_perm(&managed_perm));
     /// assert!(!manager.validate_perm(&unmanaged_perm));
@@ -154,13 +154,13 @@ impl PermissionManager {
     /// use std::collections::HashSet;
     /// use simple_perm_manager::PermissionManager;
     ///
-    /// let manager = PermissionManager::from_actions(&HashSet::from([
+    /// let manager = PermissionManager::from_actions(HashSet::from([
     ///     String::from("create"),
     ///     String::from("view"),
     /// ]));
     ///
     /// // Create managed Permission from the previous PermissionManager
-    /// let managed_perm = manager.perm_from_actions(&HashSet::from([String::from("create")]));
+    /// let managed_perm = manager.perm_from_actions(HashSet::from([String::from("create")]));
     /// ```
     ///
     /// # Panics:
@@ -170,16 +170,16 @@ impl PermissionManager {
     /// use std::collections::HashSet;
     /// use simple_perm_manager::PermissionManager;
     ///
-    /// let manager = PermissionManager::from_actions(&HashSet::from([
+    /// let manager = PermissionManager::from_actions(HashSet::from([
     ///     String::from("create"),
     ///     String::from("view"),
     /// ]));
     ///
     /// // This line of code panics
-    /// let panics = manager.perm_from_actions(&HashSet::from([String::from("other_action")]));
+    /// let panics = manager.perm_from_actions(HashSet::from([String::from("other_action")]));
     /// ```
-    pub fn perm_from_actions(&self, actions: &HashSet<String>) -> Permission {
-        let perm = Permission::from_actions_and_uuid(actions, &Some(self.id));
+    pub fn perm_from_actions(&self, actions: HashSet<String>) -> Permission {
+        let perm = Permission::from_actions_and_uuid(actions, Some(self.id));
 
         if !self.validate_perm(&perm) {
             panic!("Actions for Permission creation not allowed in PermissionManager or Permission id does not correspond to Manager id")
@@ -219,7 +219,7 @@ impl PermissionManager {
     /// let panics = manager.perm_from_json(&String::from(r#"{"other_action": true}"#));
     /// ```
     pub fn perm_from_json(&self, actions_json: &str) -> Permission {
-        let perm = Permission::from_json_and_uuid(actions_json, &Some(self.id));
+        let perm = Permission::from_json_and_uuid(actions_json, Some(self.id));
 
         if !self.validate_perm(&perm) {
             panic!("Actions for Permission creation not allowed in PermissionManager or Permission id does not correspond to Manager id")

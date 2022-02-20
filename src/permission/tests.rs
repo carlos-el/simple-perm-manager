@@ -3,7 +3,7 @@ use super::*;
 #[test]
 fn from_actions_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
-    let p = Permission::from_actions(&actions);
+    let p = Permission::from_actions(actions.clone());
 
     assert_eq!(actions, p.actions);
     assert_eq!(None, p.manager_id);
@@ -13,8 +13,8 @@ fn from_actions_test() {
 fn from_actions_and_uuid_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
     let id = Uuid::new_v4();
-    let p = Permission::from_actions_and_uuid(&actions, &Some(id));
-    let p2 = Permission::from_actions_and_uuid(&actions, &None);
+    let p = Permission::from_actions_and_uuid(actions.clone(), Some(id));
+    let p2 = Permission::from_actions_and_uuid(actions.clone(), None);
 
     assert_eq!(actions, p.actions);
     assert_eq!(Some(id), p.manager_id);
@@ -41,7 +41,7 @@ fn from_json_and_uuid_test() {
     let data = r#"{ building: true }"#;
 
     match std::panic::catch_unwind(|| {
-        Permission::from_json_and_uuid(data, &None);
+        Permission::from_json_and_uuid(data, None);
     }) {
         Ok(_) => panic!("from_json constructor should have panicked for invalid json"),
         Err(_) => (),
@@ -51,7 +51,7 @@ fn from_json_and_uuid_test() {
     let data = r#" "building": { "view": true } "#;
 
     match std::panic::catch_unwind(|| {
-        Permission::from_json_and_uuid(data, &None);
+        Permission::from_json_and_uuid(data, None);
     }) {
         Ok(_) => panic!("from_json constructor should have panicked for invalid values"),
         Err(_) => (),
@@ -75,7 +75,7 @@ fn from_json_and_uuid_test() {
         String::from("user:view"),
     ]);
 
-    let perm = Permission::from_json_and_uuid(data, &None);
+    let perm = Permission::from_json_and_uuid(data, None);
     assert_eq!(*perm.get_actions(), resulting_actions);
 }
 
@@ -98,7 +98,7 @@ fn to_json_test() {
         }
     }"#;
 
-    let my_perm = Permission::from_json_and_uuid(data, &None);
+    let my_perm = Permission::from_json_and_uuid(data, None);
     let v1: Value = serde_json::from_str(data).unwrap();
     let v2: Value = serde_json::from_str(&my_perm.to_json()).unwrap();
     assert_eq!(v1, v2)
@@ -108,7 +108,7 @@ fn to_json_test() {
 fn get_actions_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
     let id = Uuid::new_v4();
-    let p = Permission::from_actions_and_uuid(&actions, &Some(id));
+    let p = Permission::from_actions_and_uuid(actions.clone(), Some(id));
 
     assert_eq!(actions, *p.get_actions());
 }
@@ -117,9 +117,9 @@ fn get_actions_test() {
 fn is_managed_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
     let id = Uuid::new_v4();
-    let managed = Permission::from_actions_and_uuid(&actions, &Some(id));
-    let not_managed = Permission::from_actions_and_uuid(&actions, &None);
-    let not_managed_2 = Permission::from_actions(&actions);
+    let managed = Permission::from_actions_and_uuid(actions.clone(), Some(id));
+    let not_managed = Permission::from_actions_and_uuid(actions.clone(), None);
+    let not_managed_2 = Permission::from_actions(actions);
 
     assert_eq!(managed.is_managed(), true);
     assert_eq!(not_managed.is_managed(), false);
@@ -130,11 +130,11 @@ fn is_managed_test() {
 fn has_same_manager_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
     let id = Uuid::new_v4();
-    let p1 = Permission::from_actions_and_uuid(&actions, &Some(id));
-    let p2 = Permission::from_actions_and_uuid(&actions, &Some(id));
-    let p3 = Permission::from_actions_and_uuid(&actions, &Some(Uuid::new_v4()));
-    let p4 = Permission::from_actions_and_uuid(&actions, &None);
-    let p5 = Permission::from_actions(&actions);
+    let p1 = Permission::from_actions_and_uuid(actions.clone(), Some(id));
+    let p2 = Permission::from_actions_and_uuid(actions.clone(), Some(id));
+    let p3 = Permission::from_actions_and_uuid(actions.clone(), Some(Uuid::new_v4()));
+    let p4 = Permission::from_actions_and_uuid(actions.clone(), None);
+    let p5 = Permission::from_actions(actions);
 
     assert_eq!(p1.has_same_manager(&p2), true);
     assert_eq!(p1.has_same_manager(&p3), false);
@@ -146,12 +146,12 @@ fn has_same_manager_test() {
 fn union_test_no_duplicated() {
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
     let copy_p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
     assert_eq!(
         *p1.union(&copy_p1).get_actions(),
@@ -163,12 +163,12 @@ fn union_test_no_duplicated() {
 fn union_test_overlap() {
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
     let overlap_p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("create"), String::from("delete")]),
-        &Some(id),
+        HashSet::from([String::from("create"), String::from("delete")]),
+        Some(id),
     );
 
     assert_eq!(
@@ -185,10 +185,10 @@ fn union_test_overlap() {
 fn union_test_empty() {
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
-    let empty = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(id));
+    let empty = Permission::from_actions_and_uuid(HashSet::from([]), Some(id));
 
     assert_eq!(
         *p1.union(&empty).get_actions(),
@@ -201,11 +201,11 @@ fn union_test_diff_manager_catch_unwind() {
     // Test func panics if perms do not have same manager_id (using catch_unwind - know of duplicated test)
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
-    let diff_id = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(Uuid::new_v4()));
-    let none_id = Permission::from_actions_and_uuid(&HashSet::from([]), &None);
+    let diff_id = Permission::from_actions_and_uuid(HashSet::from([]), Some(Uuid::new_v4()));
+    let none_id = Permission::from_actions_and_uuid(HashSet::from([]), None);
 
     match std::panic::catch_unwind(|| {
         assert_eq!(
@@ -234,10 +234,10 @@ fn union_test_diff_manager() {
     // Test func panics if perms do not have same manager_id (using should_panic)
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
-    let diff_id = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(Uuid::new_v4()));
+    let diff_id = Permission::from_actions_and_uuid(HashSet::from([]), Some(Uuid::new_v4()));
 
     assert_eq!(
         *p1.union(&diff_id).get_actions(),
@@ -251,10 +251,10 @@ fn union_test_none_manager() {
     // Test func panics if perms do not have same manager_id (using should_panic)
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
-    let none_id = Permission::from_actions_and_uuid(&HashSet::from([]), &None);
+    let none_id = Permission::from_actions_and_uuid(HashSet::from([]), None);
 
     assert_eq!(
         *p1.union(&none_id).get_actions(),
@@ -265,8 +265,8 @@ fn union_test_none_manager() {
 #[test]
 fn difference_test_from_empty() {
     let id = Uuid::new_v4();
-    let empty = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(id));
-    let full = Permission::from_actions_and_uuid(&HashSet::from([String::from("view")]), &Some(id));
+    let empty = Permission::from_actions_and_uuid(HashSet::from([]), Some(id));
+    let full = Permission::from_actions_and_uuid(HashSet::from([String::from("view")]), Some(id));
 
     assert_eq!(*empty.difference(&full).get_actions(), HashSet::from([]));
 }
@@ -274,8 +274,8 @@ fn difference_test_from_empty() {
 #[test]
 fn difference_test_perm_empty() {
     let id = Uuid::new_v4();
-    let empty = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(id));
-    let full = Permission::from_actions_and_uuid(&HashSet::from([String::from("view")]), &Some(id));
+    let empty = Permission::from_actions_and_uuid(HashSet::from([]), Some(id));
+    let full = Permission::from_actions_and_uuid(HashSet::from([String::from("view")]), Some(id));
 
     assert_eq!(
         *full.difference(&empty).get_actions(),
@@ -287,12 +287,12 @@ fn difference_test_perm_empty() {
 fn difference_test_diff_items() {
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
     let p2 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("delete"), String::from("edit")]),
-        &Some(id),
+        HashSet::from([String::from("delete"), String::from("edit")]),
+        Some(id),
     );
 
     assert_eq!(
@@ -305,12 +305,12 @@ fn difference_test_diff_items() {
 fn difference_test_overlap() {
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
     let p2 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("create"), String::from("edit")]),
-        &Some(id),
+        HashSet::from([String::from("create"), String::from("edit")]),
+        Some(id),
     );
 
     assert_eq!(
@@ -322,9 +322,9 @@ fn difference_test_overlap() {
 #[test]
 fn difference_test_perm_diff_manager() {
     let id = Uuid::new_v4();
-    let p1 = Permission::from_actions_and_uuid(&HashSet::from([String::from("view")]), &Some(id));
-    let diff_id = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(Uuid::new_v4()));
-    let none_id = Permission::from_actions_and_uuid(&HashSet::from([]), &None);
+    let p1 = Permission::from_actions_and_uuid(HashSet::from([String::from("view")]), Some(id));
+    let diff_id = Permission::from_actions_and_uuid(HashSet::from([]), Some(Uuid::new_v4()));
+    let none_id = Permission::from_actions_and_uuid(HashSet::from([]), None);
 
     match std::panic::catch_unwind(|| {
         assert_eq!(
@@ -351,26 +351,26 @@ fn difference_test_perm_diff_manager() {
 fn contains_test() {
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([
+        HashSet::from([
             String::from("view"),
             String::from("create"),
             String::from("edit"),
         ]),
-        &Some(id),
+        Some(id),
     );
     let p2 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
     let p3 = Permission::from_actions_and_uuid(
-        &HashSet::from([
+        HashSet::from([
             String::from("view"),
             String::from("create"),
             String::from("delete"),
         ]),
-        &Some(id),
+        Some(id),
     );
-    let p4 = Permission::from_actions_and_uuid(&HashSet::from([String::from("delete")]), &Some(id));
+    let p4 = Permission::from_actions_and_uuid(HashSet::from([String::from("delete")]), Some(id));
 
     assert_eq!(p1.contains(&p2), true);
     assert_eq!(p1.contains(&p3), false);
@@ -380,10 +380,10 @@ fn contains_test() {
 #[test]
 fn contains_test_from_empty() {
     let id = Uuid::new_v4();
-    let p1 = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(id));
+    let p1 = Permission::from_actions_and_uuid(HashSet::from([]), Some(id));
     let p2 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
 
     assert_eq!(p1.contains(&p2), false);
@@ -393,10 +393,10 @@ fn contains_test_from_empty() {
 fn contains_test_perm_empty() {
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
-    let p2 = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(id));
+    let p2 = Permission::from_actions_and_uuid(HashSet::from([]), Some(id));
 
     assert_eq!(p1.contains(&p2), true);
 }
@@ -404,9 +404,9 @@ fn contains_test_perm_empty() {
 #[test]
 fn contains_test_perm_diff_manager() {
     let id = Uuid::new_v4();
-    let p1 = Permission::from_actions_and_uuid(&HashSet::from([String::from("view")]), &Some(id));
-    let diff_id = Permission::from_actions_and_uuid(&HashSet::from([]), &Some(Uuid::new_v4()));
-    let none_id = Permission::from_actions_and_uuid(&HashSet::from([]), &None);
+    let p1 = Permission::from_actions_and_uuid(HashSet::from([String::from("view")]), Some(id));
+    let diff_id = Permission::from_actions_and_uuid(HashSet::from([]), Some(Uuid::new_v4()));
+    let none_id = Permission::from_actions_and_uuid(HashSet::from([]), None);
 
     match std::panic::catch_unwind(|| {
         assert_eq!(p1.contains(&diff_id), false);
@@ -426,8 +426,8 @@ fn contains_test_perm_diff_manager() {
 fn contains_action_test() {
     let id = Uuid::new_v4();
     let p1 = Permission::from_actions_and_uuid(
-        &HashSet::from([String::from("view"), String::from("create")]),
-        &Some(id),
+        HashSet::from([String::from("view"), String::from("create")]),
+        Some(id),
     );
 
     assert_eq!(p1.contains_action(&String::from("view")), true);
