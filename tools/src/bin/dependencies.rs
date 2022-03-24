@@ -13,9 +13,11 @@ fn main() {
         .success());
 
     // Install tarpaulin (coverage tool) using cargo (Make sure libssl-dev is installed before)
+    // Install cargo audit (coverage tool) using cargo (Make sure libssl-dev is installed before)
     assert!(Command::new("cargo")
         .arg("install")
         .arg("cargo-tarpaulin")
+        .arg("cargo-audit")
         .status()
         .expect("task (install) dependencies failed in 'cargo' command")
         .success());
