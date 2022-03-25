@@ -90,6 +90,32 @@ fn validate_perm_test() {
 }
 
 #[test]
+fn clean_perm_test() {
+    let actions = HashSet::from([String::from("view"), String::from("create")]);
+
+    let pm = PermissionManager::from_actions(actions.clone());
+
+    // Clean managed Perm, unamanged Perm with all actions allowed and unamanged Perm with actions not allowed
+    let perm_managed = pm.perm_from_actions(actions.clone());
+    let perm_unmanaged_allowed = Permission::from_actions(HashSet::from(actions.clone()));
+    let perm_unmanaged_not_allowed = Permission::from_actions(HashSet::from([
+        String::from("view"),
+        String::from("edit"),
+        String::from("delete"),
+    ]));
+
+    assert_eq!(*pm.clean_perm(&perm_managed).get_actions(), actions);
+    assert_eq!(
+        *pm.clean_perm(&perm_unmanaged_allowed).get_actions(),
+        actions
+    );
+    assert_eq!(
+        *pm.clean_perm(&perm_unmanaged_not_allowed).get_actions(),
+        HashSet::from([String::from("view")])
+    );
+}
+
+#[test]
 fn perm_from_actions_test() {
     let actions = HashSet::from([String::from("view"), String::from("create")]);
     let pm = PermissionManager::from_actions(actions);

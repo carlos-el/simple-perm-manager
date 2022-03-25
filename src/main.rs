@@ -93,4 +93,6 @@ fn main() {
   }"#,
     );
     println!("From JSON 2: {:#?}", my_perm_json);
+
+    println!("From JSON perm cleaned: {:#?}", pm2.clean_perm(&my_perm));
 }

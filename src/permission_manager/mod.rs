@@ -146,6 +146,47 @@ impl PermissionManager {
         self.universe.has_same_manager(perm) && self.universe.contains(perm)
     }
 
+    /// Returns a managed [`Permission`](crate::Permission) with the actions in the [`Permission`](crate::Permission) provided unless the ones not
+    /// allowed by the [`PermissionManager`](crate::PermissionManager) actions universe.  
+    /// The [`Permission`](crate::Permission) used as argument can be both managed and unmanaged.
+    ///
+    /// /// # Examples:
+    ///
+    /// ```
+    /// use std::collections::HashSet;
+    /// use simple_perm_manager::PermissionManager;
+    /// use simple_perm_manager::Permission;
+    ///
+    /// // Manager only allowing 'create' and 'view' actions
+    /// let manager = PermissionManager::from_json(&String::from(r#"{
+    ///     "create": true,
+    ///     "view": true
+    /// }"#));
+    ///
+    /// // Create permissions
+    /// let perm1 = Permission::from_json(&String::from(r#"{
+    ///     "create": true,
+    ///     "delete": true
+    /// }"#));
+    /// let perm2 = Permission::from_json(&String::from(r#"{
+    ///     "create": true,
+    ///     "view": true,
+    ///     "delete": true
+    /// }"#));
+    ///
+    /// assert_eq!(*manager.clean_perm(&perm1).get_actions(), HashSet::from(["create".to_string()]));
+    /// assert_eq!(*manager.clean_perm(&perm2).get_actions(), HashSet::from(["create".to_string(), "view".to_string()]));
+    /// ```
+    pub fn clean_perm(&self, perm: &Permission) -> Permission {
+        let intersection: HashSet<String> = self
+            .universe
+            .get_actions()
+            .intersection(perm.get_actions())
+            .cloned()
+            .collect();
+        Permission::from_actions_and_uuid(intersection, Some(self.id))
+    }
+
     /// Returns a managed [`Permission`](crate::Permission) with the actions specified in the actions set provided.
     ///
     /// # Examples:
