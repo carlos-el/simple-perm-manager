@@ -130,7 +130,3 @@ More examples, operations and info about unmanaged permissions can be found in t
 
 ## Docs
 Documentation can be generated and open using `cargo doc --open`.
-
-## Future features
- - Role based system for permissions.
- - Node.js support.
